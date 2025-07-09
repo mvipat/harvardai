@@ -1,5 +1,6 @@
 import csv
 import sys
+import time
 
 from util import Node, StackFrontier, QueueFrontier
 
@@ -56,10 +57,12 @@ def main():
         sys.exit("Usage: python degrees.py [directory]")
     directory = sys.argv[1] if len(sys.argv) == 2 else "large"
 
+    start_time = time.time()
     # Load data from files into memory
     print("Loading data...")
     load_data(directory)
-    print("Data loaded.")
+    end_step1_time = time.time()
+    print(f"Data loaded in {end_step1_time - start_time} seconds")
 
     source = person_id_for_name(input("Name: "))
     if source is None:
@@ -69,6 +72,8 @@ def main():
         sys.exit("Person not found.")
 
     path = shortest_path(source, target)
+    end_step2_time = time.time()
+    print(f"Shortest path found in {end_step2_time - end_step1_time} seconds")
 
     if path is None:
         print("Not connected.")
@@ -100,8 +105,8 @@ def shortest_path(source, target):
             print("Target found, preparing list")
             final_list = list()
             prepare_list(element,final_list)
-            print("List prepared")
             reverse_final_list = final_list[::-1]
+            print("List prepared")
             return reverse_final_list
         else:
             int_list = neighbors_for_person(element.person_id)
@@ -151,7 +156,7 @@ def neighbors_for_person(person_id):
     Returns (movie_id, person_id) pairs for people
     who starred with a given person.
     """
-    print("Searching person's neighbor="+person_id+people[person_id]["name"])
+ 
     movie_ids = people[person_id]["movies"]
     neighbors = set()
     for movie_id in movie_ids:
