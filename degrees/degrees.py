@@ -95,12 +95,15 @@ def shortest_path(source, target):
 
     If no possible path, returns None.
     """
+    if source == target:
+        return []
+    
     queue = QueueFrontier()
     source_list = list(neighbors_for_person(source))
     addElementsToQueue(queue,None,source_list)
 
-    while not queue.empty() :
-        element = queue.remove()
+    while queue.next() is not None:
+        element = queue.next()
         if element.person_id == target:
             print("Target found, preparing list")
             final_list = list()
@@ -115,13 +118,18 @@ def shortest_path(source, target):
     return None
 
 def addElementsToQueue(queue,element,list_of_person_movie):
+    if element is not None:
+        element.explored = True
+        
     for (movie_id,person_id) in list_of_person_movie:
         if not queue.contains_person_movie(person_id,movie_id):
-            node = Node(person_id,movie_id,element)
+            node = Node(person_id,movie_id,False,element)
+            print(f"adding {person_id} {movie_id}")
             queue.add(node)
 
 def prepare_list(element,final_list):
-    final_list.append([element.movie_id,element.person_id])
+    my_tuple = (element.movie_id,element.person_id);
+    final_list.append(my_tuple)
     if element.parent is not None :
         return prepare_list(element.parent,final_list)
 
